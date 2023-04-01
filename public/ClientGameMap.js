@@ -137,22 +137,29 @@ class ClientGameMap {
         }
 
         drawEnemies(enemies){
-            // push();
-            // translate(100, 100);
-            // rotate(50);
-            // fill(100,100,100);
-            // rect(100, 100, 10, 10);
-            // strokeWeight(2);
-            // line(this.xShift + 7, this.yShift + 5, 23, 10);
-            // line(this.xShift + 7, this.yShift, 23, -10);
-            // pop();
             enemies.forEach(enemy => {
                 if(enemy != null){
+                    // ORIGINAL CODE
+                    // enemy.healthPercent = enemy.health / enemy.initialHealth * 100;
+                    // fill(60 + enemy.healthPercent/2.5, 10, 10);
+                    // circle(enemy.x + this.x, enemy.y + this.y, 25);
+                    // textSize(30);
+                    // text(enemy.index, enemy.x + this.x, enemy.y - 30 + this.y);
+
                     enemy.healthPercent = enemy.health / enemy.initialHealth * 100;
                     fill(60 + enemy.healthPercent/2.5, 10, 10);
                     circle(enemy.x + this.x, enemy.y + this.y, 25);
-                    // textSize(30);
-                    // text(enemy.index, enemy.x + this.x, enemy.y - 30 + this.y);
+
+                    // Draw the health bar above the circle
+                    const healthBarWidth = 30;
+                    const healthBarHeight = 4;
+                    const healthBarX = enemy.x + this.x - healthBarWidth / 2;
+                    const healthBarY = enemy.y + this.y - 32;
+                    const healthBarFillWidth = healthBarWidth * (enemy.health / enemy.initialHealth);
+                    fill(255, 0, 0);
+                    rect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
+                    fill(0, 255, 0);
+                    rect(healthBarX, healthBarY, healthBarFillWidth, healthBarHeight);
                 }
                 
             });

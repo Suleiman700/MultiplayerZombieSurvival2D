@@ -295,7 +295,7 @@ function draw() {
         });
         mbox.drawMysteryBox();
 
-        score.playerHealth = 1000000 //players[clientPlayer.roomIndex].health;
+        score.playerHealth = players[clientPlayer.roomIndex].health;
 
         doors.forEach(door => {
             door.draw();
