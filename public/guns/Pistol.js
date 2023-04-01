@@ -29,6 +29,9 @@ class Pistol {
         this.canShoot = true;
         this.bulletDisplacement = 48;
 
+        this.firedBulletSound = undefined
+        this.reloadSound = undefined
+
     }
 
     drawGun(xPos, yPos, angle) {
@@ -72,8 +75,5 @@ class Pistol {
         }
         score.reloading = false;
     }
-
-  
-
 
 }

@@ -1,5 +1,5 @@
 class Bullet {
-    constructor(x, y, angle, damage, velocity, sprayDeviation, playerFired, roomId, decreaseConstant, bulletDecay){
+    constructor(x, y, angle, damage, velocity, sprayDeviation, playerFired, roomId, decreaseConstant, bulletDecay, gunName){
         this.x = x;
         this.y = y;
         this.angle = angle;
@@ -11,6 +11,7 @@ class Bullet {
         this.roomId = roomId;
         this.damageDecreaseConstant = decreaseConstant;
         this.bulletDecay = bulletDecay;
+        this.gunName = gunName;
     }
 }
 

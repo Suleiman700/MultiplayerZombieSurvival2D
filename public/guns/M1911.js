@@ -1,6 +1,7 @@
+
 class M1911 extends Pistol{
 
-    constructor(xPos, yPos){
+    constructor(){
         super();
         this.startingIn = 8; //mag size/starting ammo
         this.startingOut = 120;
@@ -18,5 +19,10 @@ class M1911 extends Pistol{
         this.damageDecreaseConstant = 5;
 
         this.gunIndex = 0;
+
+        this.sounds = {
+            firedBullet: './assets/sounds/guns/M1911_bullet.mp3',
+            gunReload: './assets/sounds/guns/gun_reload.mp3',
+        }
     }
 }

@@ -15,6 +15,11 @@ class AK extends AutoRifle {
         this.damageDecreaseConstant = 10;
 
         this.gunIndex = 3;
+
+        this.sounds = {
+            firedBullet: './assets/sounds/guns/AK-47_bullet.mp3',
+            gunReload: './assets/sounds/guns/gun_reload.mp3',
+        }
     }
 
     drawGun(xPos, yPos, angle) {

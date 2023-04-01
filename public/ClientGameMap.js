@@ -135,15 +135,24 @@ class ClientGameMap {
             }
     
         }
-    
+
         drawEnemies(enemies){
+            // push();
+            // translate(100, 100);
+            // rotate(50);
+            // fill(100,100,100);
+            // rect(100, 100, 10, 10);
+            // strokeWeight(2);
+            // line(this.xShift + 7, this.yShift + 5, 23, 10);
+            // line(this.xShift + 7, this.yShift, 23, -10);
+            // pop();
             enemies.forEach(enemy => {
                 if(enemy != null){
                     enemy.healthPercent = enemy.health / enemy.initialHealth * 100;
                     fill(60 + enemy.healthPercent/2.5, 10, 10);
                     circle(enemy.x + this.x, enemy.y + this.y, 25);
-                    //textSize(30);
-                    //text(enemy.index, enemy.x + this.x, enemy.y - 30 + this.y);
+                    // textSize(30);
+                    // text(enemy.index, enemy.x + this.x, enemy.y - 30 + this.y);
                 }
                 
             });
