@@ -16,6 +16,11 @@ class Famas extends AutoRifle{
         this.damageDecreaseConstant = 5;
 
         this.gunIndex = 5;
+
+        this.sounds = {
+            firedBullet: './assets/sounds/guns/Famas_bullet.mp3',
+            gunReload: './assets/sounds/guns/gun_reload.mp3',
+        }
     }
     drawGun(xPos, yPos, angle) {
         if(xPos != null){

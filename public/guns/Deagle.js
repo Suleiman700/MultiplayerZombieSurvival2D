@@ -28,6 +28,11 @@ class Deagle extends Pistol{
         this.damageDecreaseConstant = 7;
 
         this.gunIndex = 2;
+
+        this.sounds = {
+            firedBullet: './assets/sounds/guns/Deagle_bullet.mp3',
+            gunReload: './assets/sounds/guns/gun_reload.mp3',
+        }
     }
     drawGun(xPos,yPos) {
         

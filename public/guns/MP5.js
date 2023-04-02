@@ -10,6 +10,11 @@ class MP5 extends SMG{
         this.damageDecreaseConstant = 10;
 
         this.gunIndex = 6;
+
+        this.sounds = {
+            firedBullet: './assets/sounds/guns/MP5_bullet.mp3',
+            gunReload: './assets/sounds/guns/gun_reload.mp3',
+        }
     }
     drawGun(xPos, yPos, angle) {
         if(xPos != null){

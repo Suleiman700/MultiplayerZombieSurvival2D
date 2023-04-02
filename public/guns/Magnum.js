@@ -28,6 +28,11 @@ class Magnum extends Pistol{
         this.damageDecreaseConstant = 8;
 
         this.gunIndex = 1;
+
+        this.sounds = {
+            firedBullet: './assets/sounds/guns/Magnum_bullet.mp3',
+            gunReload: './assets/sounds/guns/gun_reload.mp3',
+        }
         
     }
     drawGun(xPos, yPos, angle) {

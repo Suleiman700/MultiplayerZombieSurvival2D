@@ -22,6 +22,7 @@ const GunSounds = new GunSoundsC();
 let players = [];
 let doors = [];
 let bullets = [];
+
 //socket.on("heartbeat", players => updatePlayers(players));
 socket.on("actionsData", function (actionsData) {
     // iterate on fired bullets and play their sounds
@@ -31,16 +32,21 @@ socket.on("actionsData", function (actionsData) {
     })
 
     // iterate on blood
-    const deadEnemies = actionsData['drawBlood']
-    deadEnemies.forEach(deadEnemy => {
-        // fill(255, 0, 0); // Set fill color to red
-        // circle(deadEnemy.x + this.x, deadEnemy.y + this.y, 50); // Draw a larger circle for the blood splatter
-        // draw the blood
-        // fill(10, 150, 10);
-        // circle(players[clientPlayer.roomIndex].x, players[clientPlayer.roomIndex].y, 30); // Draw an ellipse at the given position with a diameter of 30
-        // rect(players[clientPlayer.roomIndex].x, players[clientPlayer.roomIndex].y, 30, 30)
-        // circle(deadEnemy.x, deadEnemy.y, 30); // Draw an ellipse at the given position with a diameter of 30
-    })
+    // deadEnemies.forEach(deadEnemy => {
+    //     clientMap.drawBlood({x: 100, y: 100})
+    //     // fill(255, 0, 0); // Set fill color to red
+    //     // circle(deadEnemy.x + this.x, deadEnemy.y + this.y, 50); // Draw a larger circle for the blood splatter
+    //     // // draw the blood
+    //     // fill(10, 150, 10);
+    //     // circle(players[clientPlayer.roomIndex].x, players[clientPlayer.roomIndex].y, 30); // Draw an ellipse at the given position with a diameter of 30
+    //     // rect(players[clientPlayer.roomIndex].x, players[clientPlayer.roomIndex].y, 30, 30)
+    //     // circle(deadEnemy.x, deadEnemy.y, 30); // Draw an ellipse at the given position with a diameter of 30
+    // })
+})
+
+socket.on('deadEnemies', (deadEnemiesData) => {
+    // console.log(deadEnemies)
+    deadEnemies = deadEnemiesData
 })
 
 socket.on("heartbeat", function (players) {
@@ -83,6 +89,40 @@ socket.on('bulletData', function (bulletsFromServer) {
 });
 
 socket.on('enemyData', function (enemies) {
+    // // Loop through each enemy object in the local array
+    // for (let i = 0; i < enemiesData.length; i++) {
+    //     let localEnemy = enemiesData[i];
+    //     let found = false;
+    //     let coords = {
+    //         x: 0,
+    //         y: 0
+    //     }
+    //
+    //     // Check if the current local enemy exists in the server array
+    //     for (let j = 0; j < enemies.length; j++) {
+    //         let serverEnemy = enemies[j];
+    //         if (localEnemy.index === serverEnemy.index) {
+    //             found = true;
+    //             break;
+    //         }coords['x'] = serverEnemy.x
+    //         coords['y'] = serverEnemy.y
+    //     }
+    //
+    //     // If the local enemy is not found in the server array, it's considered dead
+    //     if (!found) {
+    //         // Save the coordinates of the dead enemy (assuming x and y are the coordinates)
+    //         let deadEnemyCoords = {
+    //             x: coords.x,
+    //             y: coords.y
+    //         };
+    //
+    //         deadEnemiesCoords.push(deadEnemyCoords)
+    //
+    //         // Do something with the dead enemy coordinates
+    //         console.log('Dead enemy coords:', deadEnemyCoords);
+    //     }
+    // }
+
     enemiesData = enemies;
 });
 
@@ -168,6 +208,7 @@ function setup() {
 
     killData = [];
     enemiesData = [];
+    deadEnemies = [];
     downMessageTime = 1500;
     downMessageStart = 0;
     currentDownedPlayerName = "";
@@ -209,30 +250,19 @@ function setup() {
         decY: clientMap.decimalPlayerLocationY(),
     }
     socket.emit('start', this.data);
-
-    // Create the off-screen graphics buffer with the same dimensions as the canvas
-    bloodBuffer = createGraphics(width, height);
-
-    // Draw the blood on the off-screen buffer
-    bloodBuffer.noStroke();
-    bloodBuffer.fill(255, 0, 0, 100); // Semi-transparent red color for the blood
-    bloodBuffer.ellipse(100, 100, 30, 30); // Draw a blood ellipse at (100, 100)
+    //
+    // // Create the off-screen graphics buffer with the same dimensions as the canvas
+    // bloodBuffer = createGraphics(width, height);
+    //
+    // // Draw the blood on the off-screen buffer
+    // bloodBuffer.noStroke();
+    // bloodBuffer.fill(255, 0, 0, 100); // Semi-transparent red color for the blood
+    // bloodBuffer.ellipse(100, 100, 30, 30); // Draw a blood ellipse at (100, 100)
 }
 
 
 function draw() {
     background(220);
-
-    // Calculate blood position relative to canvas
-    const enemy = { x: 100, y: 100 }; // Replace with dead enemy object
-    const player = { x: 50, y: 50 }; // Replace with player object
-    const canvasPos = { x: 0, y: 0 }; // Replace with actual canvas position
-    const bloodPos = { x: enemy.x - player.x + canvasPos.x, y: enemy.y - player.y + canvasPos.y };
-
-    // Draw blood
-    fill(255, 0, 0);
-    rect(bloodPos.x, bloodPos.y, 30, 30);
-    
     if (!gameActive && !sessionOver) {
         //textFont(inconsolata);
         textAlign(CENTER, CENTER);
@@ -294,6 +324,8 @@ function draw() {
             wallGun.drawPickup();
         });
         mbox.drawMysteryBox();
+
+
 
         score.playerHealth = players[clientPlayer.roomIndex].health;
 

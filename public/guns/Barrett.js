@@ -8,5 +8,10 @@ class Barrett extends Sniper{
         this.imgl = 100;
         this.imgw = 40;
         this.damageDecreaseConstant = 5;
+
+        this.sounds = {
+            firedBullet: './assets/sounds/guns/Barett_bullet.mp3',
+            gunReload: './assets/sounds/guns/gun_reload.mp3',
+        }
     }
 }

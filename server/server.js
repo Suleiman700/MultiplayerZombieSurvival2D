@@ -53,6 +53,7 @@ var enemies = []
 var mapData;
 var sessionInfo = [];
 var playerKills;
+var deadEnemies = []
 const actionsData = {
     firedBullets: [
         // example:
@@ -205,12 +206,15 @@ function updateGame() {
             var bulletsInRoom = bullets.filter(b => b.roomId === room);
             var enemiesInRoom = enemies.filter(e => e.roomId === room);
             var roundInfoInRoom = roundInfos.filter(r => r.roomId === room);
+            var deadEnemiesInRoom = deadEnemies.filter(deadEnemy => deadEnemy.roomId === room)
+
 
             io.to(room).emit("heartbeat", playersInRoom);
             io.to(room).emit("doorData", doorsInRoom);
             io.to(room).emit('bulletData', bulletsInRoom);
             io.to(room).emit('enemyData', enemiesInRoom);
             io.to(room).emit('roundData', roundInfoInRoom);
+            io.to(room).emit('deadEnemies', deadEnemiesInRoom);
 
             players.forEach(element => {
                 if (element != null) {
@@ -412,16 +416,6 @@ function enemyContainsBullet(enemyX, enemyY, bulletX, bulletY) {
 }
 
 function removeEnemy(index, roomId) {
-    // get enemy position
-    const enemyX = enemies[index].x
-    const enemyY = enemies[index].y
-
-    // clear previous data
-    actionsData.drawBlood = []
-    // store enemy position to draw blood
-    actionsData.drawBlood.push({x: enemyX, y: enemyY})
-
-    console.log(`Enemy killed at: X:${enemyX} Y:${enemyY}`)
 
     enemies.splice(index, 1);
     if (enemies.length > 0) {
@@ -602,6 +596,11 @@ function updateBullets(roomId) {
                                     session[1]++;
                                 }
                             })
+                            // save dead enemy
+                            console.log(`Enemy killed at: X:${enemy.x} Y:${enemy.y}`)
+                            deadEnemies.push(enemy)
+
+                            // remove enemy
                             removeEnemy(enemy.index, enemy.roomId);
                             bullets[i].bulletInEnemy = -1;
                         }

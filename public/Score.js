@@ -65,7 +65,7 @@ class Score{
         rect(rectX, rectY, rectXlen, rectYlen, 50);
         fill(185, 0, 0);
         textSize(currentGun.textSize);
-        image(currentGun.img, rectX + 10, rectY + 7, 35, 35); // Draw gun image
+        // image(currentGun.img, rectX + 10, rectY + 7, 35, 35); // Draw gun image
         text(currentGun.name, rectX + 115, rectY + rectYlen/2);
         textSize(20);
         text(this.ammoIn, rectX + 195, rectY + rectYlen/3);
