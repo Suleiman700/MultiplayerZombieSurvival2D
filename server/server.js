@@ -24,23 +24,23 @@ let LBduos;
 let LBtrios;
 let LBquads;
 
-const connection = mysql.createConnection({
-    host: 'cgrozdatabase.ciimbtwlcait.us-east-1.rds.amazonaws.com', // host for connection
-    port: '3306', // default port for mysql is 3306
-    database: 'sys', // database from which we want to connect out node application
-    user: 'admin', // username of the mysql connection
-    password: 'SQL45rootuser.0' // password of the mysql connection
-});
+// const connection = mysql.createConnection({
+//     host: 'cgrozdatabase.ciimbtwlcait.us-east-1.rds.amazonaws.com', // host for connection
+//     port: '3306', // default port for mysql is 3306
+//     database: 'sys', // database from which we want to connect out node application
+//     user: 'admin', // username of the mysql connection
+//     password: 'SQL45rootuser.0' // password of the mysql connection
+// });
 
-try {
-    connection.connect();
-    sqlConnected = true;
-    updateLeaderBoard();
-    console.log('sql connected');
-} catch (err) {
-    console.log('unable to connect to mysql err: ' + err);
-    sqlConnected = false;
-}
+// try {
+//     connection.connect();
+//     sqlConnected = true;
+//     updateLeaderBoard();
+//     console.log('sql connected');
+// } catch (err) {
+//     console.log('unable to connect to mysql err: ' + err);
+//     sqlConnected = false;
+// }
 
 let rooms = [short.generate()];
 let lastRoomLoggedInDB = "";
@@ -140,7 +140,6 @@ io.sockets.on('connection', function (socket) {
             }
         })
     });
-
 
     socket.on('playerRevive', function (downedPlayer) {
         players[downedPlayer.index].gun = 0;
@@ -598,7 +597,12 @@ function updateBullets(roomId) {
                             })
                             // save dead enemy
                             console.log(`Enemy killed at: X:${enemy.x} Y:${enemy.y}`)
-                            deadEnemies.push(enemy)
+                            const deadEnemyData = {
+                                x: enemy.x,
+                                y: enemy.y,
+                                roomId: enemy.roomId
+                            }
+                            deadEnemies.push(deadEnemyData)
 
                             // remove enemy
                             removeEnemy(enemy.index, enemy.roomId);
