@@ -1,45 +1,119 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.dom.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.sound.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="./assets/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <meta charset="utf-8" />
 
 </head>
-<body></body>
+<body class="bg-dark">
 
-<script src="guns/GunSounds.js"></script>
+    <div class="container" style="position: relative; z-index: 999; height: 100vh;">
+        <div class="col-sm-12" hidden>
+            <div class="row text-white text-center">
+                <div class="col-sm-12">
+                    <div class="mt-5">
+                        <h1>Zombie Survival</h1>
+                        <h5>Welcome To Zombie Survival Game</h5>
+                    </div>
+                </div>
+                <div class="col-sm-12 mt-5 pt-5">
+                    <h5>Create Or Join A Room</h5>
+                    <div class="row mt-5">
+                        <div class="col-sm-6">
+                            <button class="btn btn-primary" id="create-lobby-btn" style="width: 200px; height: 150px;">Create Lobby</button>
+                        </div>
+                        <div class="col-sm-6">
+                            <button class="btn btn-primary" id="join-lobby-btn" style="width: 200px; height: 150px;">Join Lobby</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-<script src="sketch.js"></script>
-<script src="OtherPlayer.js"></script>
-<script src="ClientPlayer.js"></script>
-<script src="ClientGameMap.js"></script>
-<script src="Door.js"></script>
-<script src="Score.js"></script>
-<script src="WallGun.js"></script>
-<script src="MysteryBox.js"></script>
+        <div id="create-room-section">
+            <div class="row text-white text-center">
+                <div class="col-sm-12">
+                    <div class="mt-5">
+                        <h1>Create Lobby</h1>
+                        <p><span class="text-primary">Lobby ID:</span> 123456789</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row text-white text-center">
+                <div class="col-sm-12">
+                    <div class="mt-5">
+                        <h3>Level Selection</h3>
+                        <p id="selected-level-name">Default Level</p>
+                        <img class="level-img mx-2 selected-level" data-level-id="0" data-level-name="Default Level" src="https://picsum.photos/200" alt="">
+                        <img class="level-img mx-2" data-level-id="1" data-level-name="Testing Level" src="https://picsum.photos/200" alt="">
+                        <img class="level-img mx-2" data-level-id="2" data-level-name="Hard Level" src="https://picsum.photos/200" alt="">
+                    </div>
+                </div>
+            </div>
+            <div class="row text-white text-center">
+                <div class="col-sm-12">
+                    <div class="mt-5">
+                        <h3>Players In Lobby</h3>
+                        <div class="mt-3" id="lobby-players-list" style="border: 1px solid grey; border-radius: 25px;">
+                            <h5 class="my-2">You *</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row text-white text-center">
+                <div class="col-sm-12">
+                    <div class="mt-5">
+                        <h3>Your Name</h3>
+                        <input type="text" class="form-control bg-dark text-white" id="local-player-name-input" value="">
+                        <button class="btn btn-primary mt-3" id="change-local-player-name-btn">Change Player Name</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</body>
+
+<script src="./lobby/Lobby.js"></script>
+
+<!--<script src="guns/GunSounds.js"></script>-->
+
+<!--<script src="sketch.js"></script>-->
+<!--<script src="OtherPlayer.js"></script>-->
+<!--<script src="ClientPlayer.js"></script>-->
+<!--<script src="ClientGameMap.js"></script>-->
+<!--<script src="Door.js"></script>-->
+<!--<script src="Score.js"></script>-->
+<!--<script src="WallGun.js"></script>-->
+<!--<script src="MysteryBox.js"></script>-->
 
 
 
 
-<script src="guns/Pistol.js"></script>
-  <script src="guns/M1911.js"></script>
-  <script src="guns/Magnum.js"></script>
-  <script src="guns/Deagle.js"></script>
-<script src="guns/AutoRifle.js"></script>
-  <script src="guns/AK.js"></script>
-  <script src="guns/M4.js"></script>
-  <script src="guns/Famas.js"></script>
-<script src="guns/SMG.js"></script>
-  <script src="guns/MP5.js"></script>
-<script src="guns/Sniper.js"></script>
-  <script src="guns/Barrett.js"></script>
-<script src="guns/Shotgun.js"></script>
-  <script src="guns/Olympia.js"></script> 
-<script src="guns/Hands.js"></script> 
+<!--<script src="guns/Pistol.js"></script>-->
+<!--  <script src="guns/M1911.js"></script>-->
+<!--  <script src="guns/Magnum.js"></script>-->
+<!--  <script src="guns/Deagle.js"></script>-->
+<!--<script src="guns/AutoRifle.js"></script>-->
+<!--  <script src="guns/AK.js"></script>-->
+<!--  <script src="guns/M4.js"></script>-->
+<!--  <script src="guns/Famas.js"></script>-->
+<!--<script src="guns/SMG.js"></script>-->
+<!--  <script src="guns/MP5.js"></script>-->
+<!--<script src="guns/Sniper.js"></script>-->
+<!--  <script src="guns/Barrett.js"></script>-->
+<!--<script src="guns/Shotgun.js"></script>-->
+<!--  <script src="guns/Olympia.js"></script> -->
+<!--<script src="guns/Hands.js"></script> -->
 
 
 

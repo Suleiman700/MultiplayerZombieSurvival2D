@@ -31,7 +31,6 @@ class Pistol {
 
         this.firedBulletSound = undefined
         this.reloadSound = undefined
-
     }
 
     drawGun(xPos, yPos, angle) {

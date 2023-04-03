@@ -1,0 +1,9 @@
+
+.selected-level {
+    border: 5px solid green;
+}
+
+.level-img {
+    border-radius: 25px;
+    cursor: pointer;
+}
