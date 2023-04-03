@@ -42,7 +42,6 @@ let LBquads;
 //     sqlConnected = false;
 // }
 
-let lobbies = [];
 let rooms = [short.generate()];
 let lastRoomLoggedInDB = "";
 let players = [];
@@ -86,116 +85,6 @@ setInterval(updateLeaderBoard, 12000);
 
 io.sockets.on('connection', function (socket) {
     console.log("New connection " + socket.id);
-
-    /**
-     * create lobby
-     * @param data {object} example: {playerName: 'Player', selectedLevelData: {levelId: 0, levelName: 'Default Level'}}
-     */
-    socket.on('createLobby', (data) => {
-        const timestamp = Date.now()
-        const lobbyId = timestamp.toString()
-
-        // store lobby data
-        const lobbyData = {
-            lobbyId: lobbyId,
-            players: [
-                {
-                    id: socket.id,
-                    name: data.playerName,
-                }
-            ],
-            selectedLevelData: {
-                levelId: data.selectedLevelData.levelId,
-                levelName: data.selectedLevelData.levelName,
-            }
-        }
-        lobbies.push(lobbyData)
-
-        socket.join(lobbyId);
-        socket.lobbyId = lobbyId
-        socket.playerName = data.playerName
-        console.log(`Player connected to lobby: ${lobbyId}`)
-
-        io.to(lobbyId).emit('lobbyCreated', lobbyData);
-    })
-
-    /**
-     * change lobby selected level
-     * @param _selectedLevelData {object} example: {levelId: 0, levelName: 'Default Level'}
-     */
-    socket.on('changeLobbySelectedLevel', (_selectedLevelData) => {
-        const lobbyId = (socket.lobbyId).toString()
-        console.log(`Changed lobby ${lobbyId} level to: ${(_selectedLevelData.levelId).toString()} - ${_selectedLevelData.levelName}`)
-
-        // update lobby
-        const lobbyIndex = lobbies.findIndex(lobby => (lobby.lobbyId).toString() == lobbyId.toString())
-        lobbies[lobbyIndex]['selectedLevelData']['levelId'] = (_selectedLevelData.levelId).toString()
-        lobbies[lobbyIndex]['selectedLevelData']['levelName'] = _selectedLevelData.levelName
-
-        // emit to all lobby players
-        io.to(lobbyId).emit('changeLobbySelectedLevel', _selectedLevelData);
-    })
-
-    /**
-     * change lobby player name
-     * @param _newPlayerName {string} example: John Smith
-     */
-    socket.on('changeLobbyPlayerName', (_newPlayerName) => {
-        const lobbyId = (socket.lobbyId).toString()
-        console.log(`Player in lobby ${lobbyId} changed his name to: ${_newPlayerName}`)
-
-        // update socket player name
-        socket.playerName = _newPlayerName
-
-        // update lobby
-        const lobbyIndex = lobbies.findIndex(lobby => (lobby.lobbyId).toString() == lobbyId) // example: 0
-        // find player in lobby players
-        const lobbyPlayers = lobbies[lobbyIndex]['players']
-        const playerIndexInLobby = lobbyPlayers.findIndex(lobbyPlayer => (lobbyPlayer.id).toString() == (socket.id).toString()) // example: 1
-        // update player name
-        lobbies[lobbyIndex]['players'][playerIndexInLobby]['name'] = _newPlayerName
-
-        // emit to update players list
-        io.to(lobbyId).emit('updateLobbyPlayersList', lobbies[lobbyIndex]['players']);
-    })
-
-    /**
-     * join lobby id
-     * @param _joinedPlayerData {object} example: { lobbyId: '1', playerName: '2' }
-     */
-    socket.on('joinLobbyId', (_joinedPlayerData) => {
-        const lobbyId = _joinedPlayerData.lobbyId.toString()
-
-        // check if lobby id exists
-        const lobbyIndex = lobbies.findIndex(lobby => (lobby.lobbyId).toString() == lobbyId)
-        if (lobbyIndex == -1) {
-            // return back to emit
-            socket.emit('lobbyJoinError', 'Lobby ID not found')
-        }
-        // lobby found
-        else {
-            // update lobby players
-            const newJoinedPlayerData = {
-                id: (socket.id).toString(),
-                name: _joinedPlayerData.playerName,
-            }
-
-            console.log(`Player joined lobby: ${lobbyId}`)
-            lobbies[lobbyIndex]['players'].push(newJoinedPlayerData)
-
-            // update socket
-            socket.join(lobbyId);
-            socket.lobbyId = lobbyId
-            socket.playerName = _joinedPlayerData.playerName
-
-            // emit to update players list
-            io.to(lobbyId).emit('updateLobbyPlayersList', lobbies[lobbyIndex]['players']);
-
-            io.to(lobbyId).emit('lobbyJoinedSuccessfully', {playerName: _joinedPlayerData.playerName});
-        }
-
-        console.log('good')
-    })
 
     socket.on('start', function (data) {
         updateLeaderBoard();
@@ -302,23 +191,6 @@ io.sockets.on('connection', function (socket) {
         if (tempPlayer[0] != null) {
             updateIndexes(tempPlayer[0].index);
         }
-
-        console.log(`Player disconnected from lobby: ${socket.lobbyId}`)
-
-        // remove player from lobby
-        const lobbyIndex = lobbies.findIndex(lobby => lobby.lobbyId == socket.lobbyId)
-        if (lobbyIndex !== -1) {
-            const lobbyData = lobbies[lobbyIndex]
-            lobbyData.players.splice(lobbyData.players.indexOf(socket.playerName), 1)
-
-            // delete lobby if it has no players
-            if (lobbyData.players.length === 0) {
-                lobbies.splice(lobbyIndex, 1)
-                console.log(`Lobby deleted: ${socket.lobbyId}`)
-            }
-        }
-
-        socket.leave(socket.lobbyId)
     });
 
 
