@@ -88,6 +88,7 @@ socket.on('bulletData', function (bulletsFromServer) {
 });
 
 socket.on('enemyData', function (enemies) {
+    enemiesData = enemies;
     // // Loop through each enemy object in the local array
     // for (let i = 0; i < enemiesData.length; i++) {
     //     let localEnemy = enemiesData[i];
@@ -121,8 +122,6 @@ socket.on('enemyData', function (enemies) {
     //         console.log('Dead enemy coords:', deadEnemyCoords);
     //     }
     // }
-
-    enemiesData = enemies;
 });
 
 socket.on("roundData", function (roundInfo) {
@@ -259,6 +258,10 @@ function setup() {
     const urlParams = new URLSearchParams(window.location.search);
     const lobby = urlParams.get('lobby'); // "value1"
 
+    // check map url param
+    const mapName = urlParams.get('map');
+    clientMap.mapName = mapName
+
     this.data = {
         winW: windowWidth,
         winL: windowHeight,
@@ -268,9 +271,9 @@ function setup() {
     }
     socket.emit('start', this.data);
 
-    setTimeout(() => {
-        startGame()
-    }, 100)
+    // setTimeout(() => {
+    //     startGame()
+    // }, 100)
     //
     // // Create the off-screen graphics buffer with the same dimensions as the canvas
     // bloodBuffer = createGraphics(width, height);
@@ -529,7 +532,11 @@ function allPlayersDowned(playersInRoom) {
 
 function startGame() {
     leaderBoardActive = false;
-    socket.emit('startRoom', clientPlayer.roomId);
+    const roomData = {
+        roomId: clientPlayer.roomId,
+        map: 'lvl_square_01'
+    }
+    socket.emit('startRoom', roomData);
 }
 
 function activateLeaderboard() {

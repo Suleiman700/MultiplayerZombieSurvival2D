@@ -11,9 +11,11 @@ const Enemy = require("./Enemy");
 const RoundInfo = require("./RoundInfo");
 //const { Client } = require("socket.io/dist/client");
 
+const MAP_lvl_square_o1 = require('./maps/lvl_square_01/map.js')
+
 const ROOM_MAX_CAPACITY = 4;
 
-const server = app.listen(process.env.PORT || 3000);
+const server = 3000 /// app.listen(process.env.PORT || 3000);
 console.log('The server is now running at port ' + process.env.PORT);
 app.use(express.static("public"));
 const io = socket(server);
@@ -224,19 +226,16 @@ io.sockets.on('connection', function (socket) {
         players.push(new Player(socket.id, roomId, userCounter, data.winL, data.winW, data.decX, data.decY, 0, players.length, 0));
     });
 
-    socket.on('drawData',
+    socket.on('drawData', function (data) {
+        if (players[data.index] != null) {
+            players[data.index].decY = data.decY;
+            players[data.index].decX = data.decX;
+            players[data.index].angle = data.angle;
+            players[data.index].gun = data.gunIndex;
+        }
+    });
 
-        function (data) {
-            if (players[data.index] != null) {
-                players[data.index].decY = data.decY;
-                players[data.index].decX = data.decX;
-                players[data.index].angle = data.angle;
-                players[data.index].gun = data.gunIndex;
-            }
-        });
-
-    socket.on('bulletFired',
-        function (bulletData) {
+    socket.on('bulletFired', function (bulletData) {
             actionsData['firedBullets'] = []
 
             if (bulletData.startX != null) {
@@ -282,14 +281,36 @@ io.sockets.on('connection', function (socket) {
         })
     })
     socket.once('mapData', function (mapCoords) {
-            mapData = mapCoords;
-            currentDoorCoords = mapCoords.doorCoords;
-        });
-    socket.once('startRoom', function (room) {
+        // get map coords
+        let roundInfo = roundInfos.filter(r => r.roomId == socket.roomId);
+        console.log(socket.roomId)
+
+        mapData = mapCoords;
+        currentDoorCoords = mapCoords.doorCoords;
+    });
+
+    socket.once('startRoom', function (_roomData) {
+        const room  =_roomData['roomId']
+
+        currentDoorCoords = MAP_lvl_square_o1.coords
+
+        console.log('here')
+        console.log(currentDoorCoords)
+
+
+        // get map enemies spawns locations
+        let MAP_enemySpawns = getMapEnemiesSpawns(_roomData['map'])
+
         doors.push(new Door(1, room, 1000, 600, 200, 30, 200, 50, 25, [1, 5]))
         doors.push(new Door(2, room, 1000, 700, 700, 30, 200, 50, 25, [3, 4]))
-        enemies.push(new Enemy(0, enemies.length, .25, 25, .25, room, 0));
-        enemies.push(new Enemy(2, enemies.length, .25, 25, .25, room, 0));
+        // enemies.push(new Enemy(0, enemies.length, .25, 25, .25, room, 0));
+        // enemies.push(new Enemy(2, enemies.length, .25, 25, .25, room, 0));
+
+        // start round 1 with these spawns
+        enemies.push(new Enemy(0, enemies.length, .25, 25, .25, room, 0, MAP_enemySpawns));
+        enemies.push(new Enemy(2, enemies.length, .25, 25, .25, room, 0, MAP_enemySpawns));
+        // enemies.push(new Enemy(1, enemies.length, .25, 25, .25, room, 0, MAP_enemySpawns));
+
         roundInfos.push(new RoundInfo(room, roundInfos.length));
         var playersInRoomStart = players.filter(p => p.roomId == room);
         var playerNames = "";
@@ -568,9 +589,32 @@ function removeEnemy(index, roomId) {
 function spawnEnemies(roundInfo) {
     if (((roundInfo.lastEnemySpawn + roundInfo.timeBetweenEnemies) < Date.now()) && (roundInfo.enemyCounter < roundInfo.roundEnemyAmount)) {
         roundInfo.enemyRandomSpawnVariable = Math.random();
-        enemies.push(new Enemy(roundInfo.spawnsActive[Math.trunc((roundInfo.spawnsActive.length) * Math.random())], enemies.length, roundInfo.enemySpeed, roundInfo.enemyStartingHealth, .5, roundInfo.roomId, roundInfo.enemyRandomSpawnVariable));
+
+        // get map settings
+        let MAP_enemySpawns = getMapEnemiesSpawns(roundInfo.mapName)
+
+        enemies.push(new Enemy(roundInfo.spawnsActive[Math.trunc((roundInfo.spawnsActive.length) * Math.random())], enemies.length, roundInfo.enemySpeed, roundInfo.enemyStartingHealth, .5, roundInfo.roomId, roundInfo.enemyRandomSpawnVariable, MAP_enemySpawns));
         roundInfo.lastEnemySpawn = Date.now();
         roundInfo.enemyCounter++;
+    }
+}
+
+/**
+ * get map enemies spawns
+ * @param _mapName {string} example: lvl_square_01
+ * @return {*}
+ */
+function getMapEnemiesSpawns(_mapName) {
+    switch (_mapName) {
+        case 'lvl_square_01':
+            return MAP_lvl_square_o1.enemySpawns
+    }
+}
+
+function getMapCoords(_mapName) {
+    switch (_mapName) {
+        case 'lvl_square_01':
+            return MAP_lvl_square_o1.coords
     }
 }
 

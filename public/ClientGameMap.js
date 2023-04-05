@@ -5,9 +5,11 @@ class ClientGameMap {
         this.x = xPos;
         this.y = yPos;
         this.playerSpeed = 5;
+        this.mapName = '';
 
         // ================== Default Level ========================
-        this.coords = [//    xpos  ypos l(x) w(y)
+        this.coords = [
+            //    xpos  ypos l(x) w(y)
             [-1000, 0, 1000, 1000], //left map edge
             [-1000, -1000, 3500, 1000], //top map edge
             [-1000, 1000, 3500, 1000], //bottom map edge
@@ -21,46 +23,61 @@ class ClientGameMap {
             [mbox.x, mbox.y, 150, 50],
         ]
 
-        this.doors = [//             n  x    y    l   w    cost  x/y interaction dist spawns
+        this.doors = [
+            //             n  x    y    l   w    cost  x/y interaction dist spawns
             //new ClientDoor(1, 600, 200, 30, 200, 1000, 50, 25, [1, 5]),
             //new ClientDoor(2, 700, 700, 30, 200, 1000, 50, 25, [3, 4]),
         ]
-        this.doorCoords = [//   n  x    y    l   w
+        this.doorCoords = [
+            //   n  x    y    l   w
             [1, 600, 198, 30, 204], //door 1
             [2, 700, 698, 30, 204]  //door 2
         ]
         this.doorsActive;
 
-        // this.enemySpawns = [[300, -5, 100, 10], //spawn 0 (top left)
-        //     [1100, -5, 100, 10], //spawn 1 (top right)
-        //     [-5, 300, 10, 100], //spawn 2 (left top)
-        //     [-5, 800, 10, 100], //spawn 3 (left bottom)
-        //     [500, 995, 100, 10], //spawn 4 (bottom left)
-        //     [1300, 995, 100, 10], //spawn 5 (bottom right)
-        // ]
-
-        // ================== Level One ========================
-        this.coords = [
-            [-1000, 0, 1000, 1000], // left map edge
-            [-1000, -1000, 3500, 1000], // top map edge
-            [-1000, 1000, 3500, 1000], // bottom map edge
-            [1500, 0, 1000, 1000], // right map edge
-        ]
-
-        this.doorCoords = [
-
-        ]
-
+        // draw enemy spawns doors
         this.enemySpawns = [
+            [300, -5, 100, 10], //spawn 0 (top left)
             [1100, -5, 100, 10], //spawn 1 (top right)
+            [-5, 300, 10, 100], //spawn 2 (left top)
+            [-5, 800, 10, 100], //spawn 3 (left bottom)
+            [500, 995, 100, 10], //spawn 4 (bottom left)
+            [1300, 995, 100, 10], //spawn 5 (bottom right)
         ]
+
+
+        // check map url param
+        const urlParams = new URLSearchParams(window.location.search);
+        const mapName = urlParams.get('map');
+        this.mapName = mapName
+
+        const mapConfig = this.#getMapConfig(this.mapName)
+        this.coords = mapConfig.coords
+        this.doors = mapConfig.doors
+        this.doorCoords = mapConfig.doorCoords
+        this.enemySpawns = mapConfig.enemySpawns
 
         let mapCoords = {
-            rectCoords: this.coords, doorCoords: this.doorCoords, doorsActive: [1, 2],
+            rectCoords: this.coords,
+            doorCoords: this.doorCoords,
+            doorsActive: [1, 2],
         }
 
         socket.emit('mapData', mapCoords);
         this.moveData;
+    }
+
+    /**
+     * get map config
+     * @param _mapName {string} example: lvl_square_01
+     */
+    #getMapConfig(_mapName) {
+        switch (this.mapName) {
+            case 'lvl_square_01':
+                return MAP_square_o1
+            default:
+                return MAP_default
+        }
     }
 
     drawMap() {

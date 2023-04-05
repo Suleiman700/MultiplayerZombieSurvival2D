@@ -1,6 +1,6 @@
 class Enemy{
 
-    constructor(spawn, index, speed, health, damage, roomId, enemyRandomSpawnVariable){
+    constructor(spawn, index, speed, health, damage, roomId, enemyRandomSpawnVariable, _spawns = []){
 
         this.enemySpawns = [
             //x   y   l    w   xdev            ydev
@@ -11,6 +11,10 @@ class Enemy{
             [500, 995, 100, 10, 100, 0], //spawn 4 (bottom left)
             [1300, 995, 100, 10, 100, 0], //spawn 5 (bottom right)
         ]
+
+        if (_spawns.length) {
+            this.enemySpawns = _spawns
+        }
 
         this.spawn = spawn;
         this.x = this.enemySpawns[this.spawn][0] + this.enemySpawns[this.spawn][4] * enemyRandomSpawnVariable;
