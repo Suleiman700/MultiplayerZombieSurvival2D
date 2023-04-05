@@ -164,7 +164,6 @@ socket.once('setPlayerNum', function (playerInfo) {
     clientPlayer.roomId = playerInfo.roomId;
     clientPlayer.index = playerInfo.index;
     clientPlayer.roomIndex = playerInfo.roomIndex;
-
 });
 socket.once('startGame', function (startDoors) {
     doors.push(new Door(startDoors[0]));
@@ -217,23 +216,38 @@ function setup() {
     reviveStartBoolean = false;
 
 
+    roomCopyButton = createButton('Copy Lobby ID')
+    roomCopyButton.position(windowWidth / 2 - 60, windowHeight / 2 + 60, 0);
+    roomCopyButton.mousePressed(() => {
+        // copy room id
+        const roomId = clientPlayer.roomId
+
+        navigator.clipboard.writeText(roomId).then(function() {
+            alert(`Lobby ID copied to clipboard: ${roomId}`)
+            console.log('Async: Copying to clipboard was successful!');
+        }, function(err) {
+            console.error('Async: Could not copy text: ', err);
+        });
+    })
+
     nameInput = createInput('Enter Name');
     submitNameButton = createButton('Submit');
     startGameButton = createButton('Start Game');
     leaderBoardButton = createButton('Leaderboard');
     closeLeaderBoardButton = createButton('Close');
 
-    nameInput.position(windowWidth / 2 - 100, windowHeight / 2 + 15, 0);
-    submitNameButton.position(windowWidth / 2 + 50, windowHeight / 2 + 15, 0);
+
+    nameInput.position(windowWidth / 2 - 100, windowHeight / 2 + 100, 0);
+    submitNameButton.position(windowWidth / 2 + 50, windowHeight / 2 + 100, 0);
     submitNameButton.mousePressed(changeName);
-    startGameButton.position(windowWidth / 2 - 150, windowHeight / 2 + 50, 0);
+    startGameButton.position(windowWidth / 2 - 150, windowHeight / 2 + 140, 0);
     startGameButton.mousePressed(startGame);
     startGameButton.size(300, 50);
     startGameButton.style('font-size', '35px');
     let col = color(134, 194, 156);
     startGameButton.style('background-color', col);
     leaderBoardButton.size(300, 50);
-    leaderBoardButton.position(windowWidth / 2 - 150, windowHeight / 2 + 100, 0);
+    leaderBoardButton.position(windowWidth / 2 - 150, windowHeight / 2 + 200, 0);
     leaderBoardButton.mousePressed(activateLeaderboard);
     leaderBoardButton.style('font-size', '35px');
     closeLeaderBoardButton.mousePressed(closeLeaderBoard);
@@ -241,14 +255,22 @@ function setup() {
     closeLeaderBoardButton.style('font-size', '30px');
     closeLeaderBoardButton.hide();
 
+    // check lobby url param
+    const urlParams = new URLSearchParams(window.location.search);
+    const lobby = urlParams.get('lobby'); // "value1"
 
     this.data = {
         winW: windowWidth,
         winL: windowHeight,
         decX: clientMap.decimalPlayerLocationX(),
         decY: clientMap.decimalPlayerLocationY(),
+        lobby: lobby
     }
     socket.emit('start', this.data);
+
+    setTimeout(() => {
+        startGame()
+    }, 100)
     //
     // // Create the off-screen graphics buffer with the same dimensions as the canvas
     // bloodBuffer = createGraphics(width, height);
@@ -258,7 +280,6 @@ function setup() {
     // bloodBuffer.fill(255, 0, 0, 100); // Semi-transparent red color for the blood
     // bloodBuffer.ellipse(100, 100, 30, 30); // Draw a blood ellipse at (100, 100)
 }
-
 
 function draw() {
     background(220);
@@ -273,22 +294,28 @@ function draw() {
         fill(105, 105, 105);
         text("Players in lobby: " + players.length, windowWidth / 2, windowHeight / 2 - 225);
 
+
+        textSize(30);
+        fill(105, 105, 105);
+        text('Lobby: ' + clientPlayer.roomId, windowWidth / 2, windowHeight / 2 - 180);
+
         for (var i = 0; i < 4; i++) {
             fill(105, 105, 105);
-            rect(windowWidth / 2 - 150, windowHeight / 2 - 200 + 50 * i, 300, 50);
+            rect(windowWidth / 2 - 150, windowHeight / 2 - 150 + 50 * i, 300, 50);
         }
         for (var i = 0; i < 4; i++) {
             fill(0, 0, 0);
             if (players[i] != null) {
-                text(players[i].name, windowWidth / 2, windowHeight / 2 - 175 + 50 * i)
+                text(players[i].name, windowWidth / 2, windowHeight / 2 - 125 + 50 * i)
             } else {
-                text("empty", windowWidth / 2, windowHeight / 2 - 175 + 50 * i)
+                text("empty", windowWidth / 2, windowHeight / 2 - 125 + 50 * i)
             }
         }
 
     }
     else if (gameActive) {
 
+        roomCopyButton.hide();
         nameInput.hide();
         submitNameButton.hide();
         leaderBoardButton.hide();

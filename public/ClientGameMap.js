@@ -6,6 +6,7 @@ class ClientGameMap {
         this.y = yPos;
         this.playerSpeed = 5;
 
+        // ================== Default Level ========================
         this.coords = [//    xpos  ypos l(x) w(y)
             [-1000, 0, 1000, 1000], //left map edge
             [-1000, -1000, 3500, 1000], //top map edge
@@ -17,7 +18,8 @@ class ClientGameMap {
             [600, 600, 120, 30],//room under spawn connector wall
             [700, 600, 30, 100],//room under spawn top door wall
             [700, 900, 30, 100],//room under spawn bottom door wall
-            [mbox.x, mbox.y, 150, 50],]
+            [mbox.x, mbox.y, 150, 50],
+        ]
 
         this.doors = [//             n  x    y    l   w    cost  x/y interaction dist spawns
             //new ClientDoor(1, 600, 200, 30, 200, 1000, 50, 25, [1, 5]),
@@ -29,12 +31,28 @@ class ClientGameMap {
         ]
         this.doorsActive;
 
-        this.enemySpawns = [[300, -5, 100, 10], //spawn 0 (top left)
+        // this.enemySpawns = [[300, -5, 100, 10], //spawn 0 (top left)
+        //     [1100, -5, 100, 10], //spawn 1 (top right)
+        //     [-5, 300, 10, 100], //spawn 2 (left top)
+        //     [-5, 800, 10, 100], //spawn 3 (left bottom)
+        //     [500, 995, 100, 10], //spawn 4 (bottom left)
+        //     [1300, 995, 100, 10], //spawn 5 (bottom right)
+        // ]
+
+        // ================== Level One ========================
+        this.coords = [
+            [-1000, 0, 1000, 1000], // left map edge
+            [-1000, -1000, 3500, 1000], // top map edge
+            [-1000, 1000, 3500, 1000], // bottom map edge
+            [1500, 0, 1000, 1000], // right map edge
+        ]
+
+        this.doorCoords = [
+
+        ]
+
+        this.enemySpawns = [
             [1100, -5, 100, 10], //spawn 1 (top right)
-            [-5, 300, 10, 100], //spawn 2 (left top)
-            [-5, 800, 10, 100], //spawn 3 (left bottom)
-            [500, 995, 100, 10], //spawn 4 (bottom left)
-            [1300, 995, 100, 10], //spawn 5 (bottom right)
         ]
 
         let mapCoords = {

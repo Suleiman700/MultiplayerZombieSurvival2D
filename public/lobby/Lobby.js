@@ -212,6 +212,18 @@ new class Lobby {
 
             })
         })
+
+        // start game button
+        const startGameBtn = document.querySelector('#start-game-btn')
+        startGameBtn.addEventListener('click', () => {
+            const windowData = {
+                winW: windowWidth,
+                winL: windowHeight,
+                decX: clientMap.decimalPlayerLocationX(),
+                decY: clientMap.decimalPlayerLocationY(),
+            }
+            socket.emit('startLobbyGame', windowData);
+        })
     }
 
     #removePreviouslySelectedLevelImageStyle() {

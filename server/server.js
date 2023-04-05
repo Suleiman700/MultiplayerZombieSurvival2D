@@ -201,8 +201,18 @@ io.sockets.on('connection', function (socket) {
         updateLeaderBoard();
         userCounter++;
 
-        var roomId = getRoom();
+        // check lobby
+        var roomId;
+        if (data.lobby !== null && data.lobby !== '') {
+            roomId = data.lobby
+            rooms.push(roomId);
+        }
+        else {
+            roomId = getRoom()
+        }
         socket.join(roomId);
+
+        console.log(`Player joined lobby ${roomId}`)
 
         var playersInRoom = players.filter(p => p.roomId == roomId);
 
@@ -271,9 +281,7 @@ io.sockets.on('connection', function (socket) {
             }
         })
     })
-    socket.once('mapData',
-
-        function (mapCoords) {
+    socket.once('mapData', function (mapCoords) {
             mapData = mapCoords;
             currentDoorCoords = mapCoords.doorCoords;
         });
@@ -318,6 +326,8 @@ io.sockets.on('connection', function (socket) {
             }
         }
 
+        console.log(socket.lobbyId)
+
         socket.leave(socket.lobbyId)
     });
 
@@ -334,7 +344,6 @@ function updateGame() {
             var enemiesInRoom = enemies.filter(e => e.roomId === room);
             var roundInfoInRoom = roundInfos.filter(r => r.roomId === room);
             var deadEnemiesInRoom = deadEnemies.filter(deadEnemy => deadEnemy.roomId === room)
-
 
             io.to(room).emit("heartbeat", playersInRoom);
             io.to(room).emit("doorData", doorsInRoom);
