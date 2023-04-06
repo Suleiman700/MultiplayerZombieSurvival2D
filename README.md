@@ -1,6 +1,8 @@
 # Multiplayer Zombie Survival 2D
 This is a 2D multiplayer socket-based zombie survival game. It features multiple lobbies, various guns, door mechanics, survival system, and a money system.
 
+Try it now: http://194.163.132.253:82/public/
+
 ![chrome_OqcsUwh6aT](https://user-images.githubusercontent.com/25286081/230240282-306482f3-c6a4-42d2-9c72-67074cb2cb90.gif)
 
 
